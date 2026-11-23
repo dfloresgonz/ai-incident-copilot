@@ -1,6 +1,7 @@
 # AI Incident Copilot: Hybrid 3:00 AM Incident Support Platform
 
 [![Architecture: Multi-Agent](https://img.shields.io/badge/Architecture-Hybrid%20Multi--Agent-0B2545?style=flat-square)](https://github.com/dfloresgonz/ai-incident-copilot)
+[![Article: AWS Builder Center](https://img.shields.io/badge/Article-AWS%20Builder%20Center-FF9900?style=flat-square&logo=amazon-aws)](https://builder.aws.com/content/3MW4ZwPYN9cbS66lRG6RxEmC7RE/would-you-trust-an-llm-alone-in-production-at-300-am-neither-would-i-architecting-a-hybrid-incident-copilot-with-langgraph-mcp-and-safe-chatops)
 [![Inference: Amazon Bedrock](https://img.shields.io/badge/Inference-Amazon%20Bedrock%20Claude%205.5-01A88D?style=flat-square)](https://aws.amazon.com/bedrock/)
 [![Protocol: Model Context Protocol](https://img.shields.io/badge/Tools-Model%20Context%20Protocol%20(MCP)-3357DA?style=flat-square)](https://modelcontextprotocol.io/)
 [![Database: PostgreSQL + pgvector](https://img.shields.io/badge/Database-PostgreSQL%2016%20%2B%20pgvector-2E27AD?style=flat-square)](https://github.com/pgvector/pgvector)
@@ -173,5 +174,5 @@ Sample output:
 **Diego Flores Gonzales**  
 *Solutions Architect*  
 * [LinkedIn](https://www.linkedin.com/in/diego-flores-gonzales/)  
-* [AWS Builder Center](https://builder.aws.com/content/enterprise-ai-incident-copilot-langgraph-mcp)  
+* [AWS Builder Center Article](https://builder.aws.com/content/3MW4ZwPYN9cbS66lRG6RxEmC7RE/would-you-trust-an-llm-alone-in-production-at-300-am-neither-would-i-architecting-a-hybrid-incident-copilot-with-langgraph-mcp-and-safe-chatops)  
 * [GitHub](https://github.com/dfloresgonz)
