@@ -1,27 +1,32 @@
-# AI Incident Copilot
+# AI Incident Copilot: Hybrid 3:00 AM Incident Support Platform
 
-[![Architecture: Multi-Agent](https://img.shields.io/badge/Architecture-Multi--Agent%20LangGraph-0B2545?style=flat-square)](https://github.com/dfloresgonz/ai-incident-copilot)
+[![Architecture: Multi-Agent](https://img.shields.io/badge/Architecture-Hybrid%20Multi--Agent-0B2545?style=flat-square)](https://github.com/dfloresgonz/ai-incident-copilot)
 [![Inference: Amazon Bedrock](https://img.shields.io/badge/Inference-Amazon%20Bedrock%20Claude%205.5-01A88D?style=flat-square)](https://aws.amazon.com/bedrock/)
 [![Protocol: Model Context Protocol](https://img.shields.io/badge/Tools-Model%20Context%20Protocol%20(MCP)-3357DA?style=flat-square)](https://modelcontextprotocol.io/)
 [![Database: PostgreSQL + pgvector](https://img.shields.io/badge/Database-PostgreSQL%2016%20%2B%20pgvector-2E27AD?style=flat-square)](https://github.com/pgvector/pgvector)
 [![Remediation: AWS SSM + Step Functions](https://img.shields.io/badge/Remediation-AWS%20SSM%20%2B%20Step%20Functions-E7157B?style=flat-square)](https://aws.amazon.com/systems-manager/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-gray?style=flat-square)](LICENSE)
 
-> **Autonomous 3:00 AM Incident Response Platform on AWS**: Multi-agent root-cause analysis (RCA) with LangGraph, decoupled tools via Model Context Protocol (MCP), operational memory via Hybrid RAG (BM25 + pgvector HNSW with Reciprocal Rank Fusion), and verified 1-click ChatOps remediation with AWS Systems Manager and Step Functions.
+> **Would you trust an LLM alone in production at 3:00 AM? Neither would we.**
+> AI Incident Copilot is not an unchecked autonomous agent running destructive mutations on live clusters. It is an **investigative SRE support platform on AWS**: multi-agent root-cause analysis (RCA) with LangGraph and Tiered Bedrock, decoupled tools via Model Context Protocol (MCP), operational memory via Hybrid RAG (BM25 + pgvector HNSW with RRF), and **safe, human-in-the-loop 1-click ChatOps** with AWS Systems Manager and Step Functions canary verification.
 
 ---
 
-## Executive Summary
+## Executive Summary: The Hybrid Support Philosophy
 
-When a major production outage strikes at 3:00 AM, monitoring systems fire hundreds of simultaneous CloudWatch alarms. The bottleneck is almost never writing the fix—it is the **40 minutes spent correlating alerts across microservices, hunting recent git commits, and digging through outdated postmortems to remember how the bug was solved last time**.
+Would you grant an unconstrained LLM write access to your production database or Kubernetes clusters at 3:00 AM? Giving an autonomous agent free rein during a live outage is an existential risk: LLMs hallucinate under noisy telemetry, misread transient blips, and lack deterministic safety boundaries.
 
-Naive, single-prompt LLMs collapse under alert storms: they hallucinate root causes, hit context token ceilings, and lack the guardrails required to touch live production clusters.
+**However, keeping incident triage 100% manual is equally broken.**
 
-**AI Incident Copilot** solves this by separating reasoning from execution:
+When a major production outage strikes, monitoring systems fire cascades of simultaneous alarms. The bottleneck is almost never writing the fix—it is the **40 minutes spent correlating alerts across microservices, hunting recent git commits, and digging through outdated postmortems to remember how the bug was solved last time**.
+
+**AI Incident Copilot** solves this by establishing a strict hybrid contract:
+* **The AI accelerates investigation:** Multi-agent reasoning gathers evidence across CloudWatch metrics, logs, git deployments, and past postmortems in seconds.
+* **Humans retain authoritative execution:** The copilot surfaces a synthesized diagnosis, confidence score, and pre-verified runbook in Slack. The on-call SRE approves with 1 click; AWS Systems Manager executes with scoped IAM credentials; Step Functions canary loops automatically roll back if errors persist.
 * **MTTR Compression:** From **45 minutes to under 3 minutes** for recurring and correlated failure modes.
 * **Alert Storm Absorption:** Amazon SQS FIFO buffers and aggregates redundant alarm bursts into a single unified incident report.
 * **Dual-Memory Search:** Hybrid RAG achieves **+40% retrieval precision** over pure vector search on exact error codes (`HTTP 504`, `DeadlockDetected`).
-* **Zero Destructive Autonomy:** LLMs propose remediation; humans approve with 1 click in Slack; AWS Systems Manager executes with scoped IAM credentials; Step Functions canary loops automatically roll back if errors persist.
+* **Zero Destructive Autonomy:** LLMs propose; humans verify and approve; AWS Systems Manager executes; Step Functions monitors canary health.
 
 ---
 
