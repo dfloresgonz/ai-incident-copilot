@@ -1,0 +1,31 @@
+schemaVersion: "0.3"
+description: "Safe production runbook: Gracefully rolls ECS service tasks to eliminate deadlocks and connection exhaustion."
+parameters:
+  Cluster:
+    type: String
+    description: "Target ECS Cluster name"
+    default: "production-microservices"
+  Service:
+    type: String
+    description: "Target ECS Service name"
+mainSteps:
+  - name: updateService
+    action: "aws:executeAwsApi"
+    inputs:
+      Service: ecs
+      Api: UpdateService
+      cluster: "{{ Cluster }}"
+      service: "{{ Service }}"
+      forceNewDeployment: true
+  - name: waitForServiceStability
+    action: "aws:waitForAwsResourceProperty"
+    timeoutSeconds: 300
+    inputs:
+      Service: ecs
+      Api: DescribeServices
+      cluster: "{{ Cluster }}"
+      services:
+        - "{{ Service }}"
+      PropertySelector: "$.services[0].deployments[0].rolloutState"
+      DesiredValues:
+        - "COMPLETED"

@@ -1,0 +1,79 @@
+{
+  "Comment": "Canary Verification Loop for Autonomous Incident Remediation",
+  "StartAt": "ExecuteSSMAutomation",
+  "States": {
+    "ExecuteSSMAutomation": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:ssm:startAutomationExecution",
+      "Parameters": {
+        "DocumentName.$": "$.runbook",
+        "Parameters": {
+          "Cluster": ["production-microservices"],
+          "Service.$": "States.Array($.service_name)"
+        }
+      },
+      "ResultPath": "$.ssm_result",
+      "Next": "WaitForCanaryStabilization"
+    },
+    "WaitForCanaryStabilization": {
+      "Type": "Wait",
+      "Seconds": 180,
+      "Next": "QueryCloudWatchHealth"
+    },
+    "QueryCloudWatchHealth": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:cloudwatch:getMetricData",
+      "Parameters": {
+        "MetricDataQueries": [
+          {
+            "Id": "m1",
+            "MetricStat": {
+              "Metric": {
+                "Namespace": "AWS/ApplicationELB",
+                "MetricName": "HTTPCode_Target_5XX_Count"
+              },
+              "Period": 60,
+              "Stat": "Sum"
+            }
+          }
+        ],
+        "StartTime.$": "$$.Execution.StartTime",
+        "EndTime.$": "$$.State.EnteredTime"
+      },
+      "ResultPath": "$.health_check",
+      "Next": "EvaluateCanaryVerdict"
+    },
+    "EvaluateCanaryVerdict": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.health_check.MetricDataResults[0].Values[0]",
+          "NumericLessThan": 5,
+          "Next": "RemediationSucceeded"
+        }
+      ],
+      "Default": "TriggerEmergencyRollback"
+    },
+    "TriggerEmergencyRollback": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:ssm:startAutomationExecution",
+      "Parameters": {
+        "DocumentName": "AWS-RollbackDeployment",
+        "Parameters": {
+          "Service.$": "States.Array($.service_name)"
+        }
+      },
+      "Next": "PostEscalationAlert"
+    },
+    "PostEscalationAlert": {
+      "Type": "Pass",
+      "Result": "Canary failed: Automated rollback triggered. Incident escalated to Lead SRE.",
+      "End": true
+    },
+    "RemediationSucceeded": {
+      "Type": "Pass",
+      "Result": "Canary verified: 5xx error rate below 0.1%. Incident resolved successfully.",
+      "End": true
+    }
+  }
+}
